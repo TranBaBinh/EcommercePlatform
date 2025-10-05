@@ -1,98 +1,161 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Form, Input, Button, Card, Typography, Divider, Space, Alert } from 'antd';
+import { UserOutlined, LockOutlined, GoogleOutlined, FacebookOutlined } from '@ant-design/icons';
+
+const { Title, Text } = Typography;
 
 export default function Login() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const onFinish = async (values) => {
+    setLoading(true);
+    setError('');
+    
+    try {
+      // TODO: Implement login API call
+      console.log('Login attempt:', values);
+      
+      // Giả lập API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Redirect sau khi login thành công
+      // navigate('/');
+      
+    } catch {
+      setError('Invalid email or password. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full space-y-8 p-8">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900">Sign in to your account</h2>
-          <p className="mt-2 text-gray-600">
-            Or{' '}
-            <Link to="/register" className="text-blue-600 hover:text-blue-500">
-              create a new account
-            </Link>
-          </p>
+    <div style={{ 
+      minHeight: '100vh', 
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '20px'
+    }}>
+      <Card 
+        style={{ 
+          width: '100%', 
+          maxWidth: 400,
+          boxShadow: '0 8px 24px rgba(0,0,0,0.12)'
+        }}
+      >
+        <div style={{ textAlign: 'center', marginBottom: 24 }}>
+          <Title level={2} style={{ color: '#262626', marginBottom: 8 }}>
+            Welcome Back
+          </Title>
+          <Text type="secondary">
+            Sign in to your account to continue
+          </Text>
         </div>
-        
-        <form className="mt-8 space-y-6">
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter your email"
-              />
-            </div>
-            
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter your password"
-              />
-            </div>
-          </div>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember-me"
-                name="remember-me"
-                type="checkbox"
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                Remember me
-              </label>
-            </div>
+        {error && (
+          <Alert 
+            message={error} 
+            type="error" 
+            showIcon 
+            style={{ marginBottom: 16 }}
+            closable
+            onClose={() => setError('')}
+          />
+        )}
 
-            <div className="text-sm">
-              <a href="#" className="text-blue-600 hover:text-blue-500">
-                Forgot your password?
-              </a>
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+        <Form
+          name="login"
+          onFinish={onFinish}
+          autoComplete="off"
+          size="large"
+        >
+          <Form.Item
+            name="email"
+            rules={[
+              { required: true, message: 'Please input your email!' },
+              { type: 'email', message: 'Please enter a valid email!' }
+            ]}
           >
-            Sign in
-          </button>
-        </form>
+            <Input 
+              prefix={<UserOutlined />} 
+              placeholder="Email address"
+            />
+          </Form.Item>
 
-        <div className="mt-6">
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300" />
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-gray-50 text-gray-500">Or continue with</span>
-            </div>
-          </div>
+          <Form.Item
+            name="password"
+            rules={[
+              { required: true, message: 'Please input your password!' },
+              { min: 6, message: 'Password must be at least 6 characters!' }
+            ]}
+          >
+            <Input.Password
+              prefix={<LockOutlined />}
+              placeholder="Password"
+            />
+          </Form.Item>
 
-          <div className="mt-6 grid grid-cols-2 gap-3">
-            <button className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-              Google
-            </button>
-            <button className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-              Facebook
-            </button>
-          </div>
+          <Form.Item style={{ marginBottom: 16 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Link to="/forgot-password" style={{ color: '#1890ff' }}>
+                Forgot password?
+              </Link>
+            </div>
+          </Form.Item>
+
+          <Form.Item>
+            <Button 
+              type="primary" 
+              htmlType="submit" 
+              block
+              loading={loading}
+              style={{ 
+                height: 45,
+                backgroundColor: '#fb5533',
+                borderColor: '#fb5533',
+                fontSize: 16,
+                fontWeight: 500
+              }}
+            >
+              Sign In
+            </Button>
+          </Form.Item>
+        </Form>
+
+        <Divider>
+          <Text type="secondary" style={{ fontSize: 12 }}>Or continue with</Text>
+        </Divider>
+
+        <Space direction="vertical" style={{ width: '100%' }} size="middle">
+          <Button 
+            block 
+            icon={<GoogleOutlined />}
+            style={{ height: 40 }}
+          >
+            Continue with Google
+          </Button>
+          
+          <Button 
+            block 
+            icon={<FacebookOutlined />}
+            style={{ height: 40 }}
+          >
+            Continue with Facebook
+          </Button>
+        </Space>
+
+        <div style={{ textAlign: 'center', marginTop: 24 }}>
+          <Text type="secondary">
+            Don't have an account?{' '}
+            <Link to="/register" style={{ color: '#fb5533', fontWeight: 500 }}>
+              Sign up here
+            </Link>
+          </Text>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

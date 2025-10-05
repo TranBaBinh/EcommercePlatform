@@ -15,6 +15,10 @@ const { Search } = Input;
 
 export default function Header() {
   const location = useLocation();
+  
+  // Giả sử user chưa login - trong thực tế sẽ check từ auth context
+  const isLoggedIn = false; // Thay đổi logic này sau
+  const userName = "John Doe"; // Từ auth context
 
   const categoryMenu = (
     <Menu
@@ -139,16 +143,42 @@ export default function Header() {
                   </Badge>
                 </Link>
 
-                {/* User menu */}
-                <Dropdown overlay={userMenu} trigger={['click']}>
-                  <Button 
-                    type="text" 
-                    style={{ color: 'white', padding: '0 8px' }}
-                  >
-                    <UserOutlined style={{ fontSize: '18px', marginRight: 4 }} />
-                    Account <DownOutlined />
-                  </Button>
-                </Dropdown>
+                {/* User menu - Conditional rendering based on login status */}
+                {isLoggedIn ? (
+                  <Dropdown overlay={userMenu} trigger={['click']}>
+                    <Button 
+                      type="text" 
+                      style={{ color: 'white', padding: '0 8px' }}
+                    >
+                      <UserOutlined style={{ fontSize: '18px', marginRight: 4 }} />
+                      {userName} <DownOutlined />
+                    </Button>
+                  </Dropdown>
+                ) : (
+                  <Space>
+                    <Link to="/login">
+                      <Button 
+                        type="text" 
+                        style={{ color: 'white', fontWeight: 500 }}
+                      >
+                        Login
+                      </Button>
+                    </Link>
+                    <Link to="/register">
+                      <Button 
+                        type="primary" 
+                        size="small"
+                        style={{ 
+                          backgroundColor: '#fb5533', 
+                          borderColor: '#fb5533',
+                          fontWeight: 500 
+                        }}
+                      >
+                        Sign Up
+                      </Button>
+                    </Link>
+                  </Space>
+                )}
               </Space>
             </Col>
           </Row>

@@ -20,14 +20,16 @@ namespace EcommercePlatform.Entities
         public string PhoneNumber { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public bool IsActive { get; set; } = true;
+        public bool IsActive { get; set; } = false;
 
-        public ICollection<UserRole> Roles { get; set; } = new List<UserRole>();
+        public Guid RoleId { get; set; }
+     
         public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
         public ICollection<Cart> Carts { get; set; } = new List<Cart>();
         public ICollection<Order> Orders { get; set; } = new List<Order>();
         public ICollection<Address> Addresses { get; set; } = new List<Address>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
         public ICollection<AuditLog> AuditLogs { get; set; } = new List<AuditLog>();
+        public Role UserRole { get; set; }
     }
 }

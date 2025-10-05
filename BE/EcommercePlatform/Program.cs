@@ -1,5 +1,9 @@
+using EcommercePlatform.Configuration;
 using EcommercePlatform.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +18,38 @@ builder.Services.AddSwaggerGen();
 //dang ky dbcontext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
+//cau hinh jwt 
+builder.Services.Configure<JwtSetting>(builder.Configuration.GetSection("JwtOptions"));
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    var jwtSettings = builder.Configuration.GetSection("JwtOptions").Get<JwtSetting>();
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidIssuer = jwtSettings.Issuer,
+
+        ValidateAudience = true,
+        ValidAudience = jwtSettings.Audience,
+
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.FromSeconds(30),
+
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
+    };
+
+
+});
+
+
 
 
 var app = builder.Build();

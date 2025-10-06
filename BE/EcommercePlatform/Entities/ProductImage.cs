@@ -4,7 +4,7 @@ namespace EcommercePlatform.Entities
 {
     public class ProductImage
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         [Required]
         public Guid ProductId { get; set; }
         [Required , StringLength(500)]

@@ -2,7 +2,7 @@
 {
     public class AuditLog
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         public Guid UserId { get; set; }
         public string Action { get; set; }
         public string TableName { get; set; }

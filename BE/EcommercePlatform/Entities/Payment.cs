@@ -2,7 +2,7 @@
 {
     public class Payment
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         public Guid OrderId { get; set; }
         public string PaymentMethod { get; set; }
         public decimal PaidAmount { get; set; }

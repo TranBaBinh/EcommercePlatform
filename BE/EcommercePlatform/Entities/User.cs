@@ -4,7 +4,7 @@ namespace EcommercePlatform.Entities
 {
     public class User
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required(ErrorMessage = "Full name is required")]
         [StringLength(100,ErrorMessage = "Full name can't be longer than 100")]
@@ -17,11 +17,11 @@ namespace EcommercePlatform.Entities
         public string PasswordHash { get; set; }
 
         [Phone(ErrorMessage = "Invalid phone number")]
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public bool IsActive { get; set; } = false;
-
+        public bool IsBanned { get; set; } = false ;
         public Guid RoleId { get; set; }
      
         public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();

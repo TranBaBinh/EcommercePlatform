@@ -2,22 +2,23 @@
 
 namespace EcommercePlatform.Entities
 {
-    public class RefreshToken
+    public class EmailVerificationToken
     {
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
         public Guid UserId { get; set; }
 
-        [Required , StringLength(500)]
-        public string Token { get; set; }
+        [Required]
+        [MaxLength(255)]
+        public string Token { get; set; }  
 
+        [Required]
         public DateTime ExpiresAt { get; set; }
 
-        public bool IsRevoked { get; set; } = false;
+        public bool IsUser { get; set; } = false;
 
-        public DateTime CreateAt { get; set; } = DateTime.UtcNow;
+        public User User { get; set; }
 
-        public User user { get; set; }
     }
 }

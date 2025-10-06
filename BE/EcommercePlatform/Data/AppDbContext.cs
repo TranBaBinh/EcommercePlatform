@@ -24,6 +24,7 @@ namespace EcommercePlatform.Data
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Voucher> Vouchers { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
+        public DbSet<EmailVerificationToken> EmailVerificationTokens { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -54,6 +55,11 @@ namespace EcommercePlatform.Data
             modelBuilder.Entity<Voucher>()
                 .Property(v => v.DiscountAmount)
                 .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Role>()
+                 .Property(r => r.Id)
+                 .HasDefaultValueSql("NEWID()");
+
             // User - Order
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.User)

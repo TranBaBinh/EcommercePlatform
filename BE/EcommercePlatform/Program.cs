@@ -1,5 +1,10 @@
 using EcommercePlatform.Configuration;
 using EcommercePlatform.Data;
+using EcommercePlatform.Repositories.Implementations;
+using EcommercePlatform.Repositories.Interfaces;
+using EcommercePlatform.Services.CommonService;
+using EcommercePlatform.Services.Implementations;
+using EcommercePlatform.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -49,8 +54,12 @@ builder.Services.AddAuthentication(options =>
 
 });
 
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IEmailVfRepository, EmailVfRepository>();
 
-
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<EmailService>();
 
 var app = builder.Build();
 

@@ -1,0 +1,42 @@
+﻿using EcommercePlatform.DTOs.RequestDTO;
+using EcommercePlatform.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace EcommercePlatform.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AuthController : ControllerBase
+    {
+        private readonly IAuthService _authService;
+        public AuthController(IAuthService authService)
+        {
+            _authService = authService;
+        }
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterDTO registerDTO)
+        {
+            try
+            {
+                await _authService.RegisterAsync(registerDTO);
+                return Ok(new { message = "Registration successful. Check your email to verify account."});
+            }
+            catch (Exception ex) { 
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet("verify-email")]
+        public async Task<IActionResult> VerifyEmail([FromQuery] Guid userId , [FromQuery] string token)
+        {
+            
+              var rs =  await _authService.VerifyEmailAsync(userId , token);
+            if (rs.Success == true)
+            {
+                return Ok(rs);
+            }
+            return BadRequest(rs);
+             
+        }
+    }
+}

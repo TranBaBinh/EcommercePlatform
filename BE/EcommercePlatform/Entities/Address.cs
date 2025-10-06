@@ -2,7 +2,7 @@
 {
     public class Address
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         public Guid UserId { get; set; }
         public string Street { get; set; }
         public string City { get; set; }

@@ -4,7 +4,7 @@ namespace EcommercePlatform.Entities
 {
     public class Category
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         [Required , StringLength(100)]
         public string Name { get; set; }
 

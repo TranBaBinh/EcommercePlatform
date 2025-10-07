@@ -1,4 +1,4 @@
-using EcommercePlatform.Configuration;
+﻿using EcommercePlatform.Configuration;
 using EcommercePlatform.Data;
 using EcommercePlatform.Repositories.Implementations;
 using EcommercePlatform.Repositories.Interfaces;
@@ -12,22 +12,23 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+// Add controllers
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
-//dang ky dbcontext
+// Đăng ký DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
-//cau hinh jwt 
+// Cấu hình JWT từ appsettings.json
 builder.Services.Configure<JwtSetting>(builder.Configuration.GetSection("JwtOptions"));
 
+var jwtSettings = builder.Configuration.GetSection("JwtOptions").Get<JwtSetting>();
+
+// Cấu hình Authentication với JWT
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -35,7 +36,8 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    var jwtSettings = builder.Configuration.GetSection("JwtOptions").Get<JwtSetting>();
+    options.RequireHttpsMetadata = false; // để test local
+    options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -45,26 +47,27 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = jwtSettings.Audience,
 
         ValidateLifetime = true,
-        ClockSkew = TimeSpan.FromSeconds(30),
+        ClockSkew = TimeSpan.FromMinutes(1), // cho phép trễ nhẹ
 
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(jwtSettings.Key)
+        )
     };
-
-
 });
 
+// Đăng ký DI
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IEmailVfRepository, EmailVfRepository>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<EmailService>();
 
 var app = builder.Build();
 
-
-// Configure the HTTP request pipeline.
+// Middleware pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -73,6 +76,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();  
 app.UseAuthorization();
 
 app.MapControllers();

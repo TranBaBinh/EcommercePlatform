@@ -10,5 +10,9 @@ namespace EcommercePlatform.Services.Interfaces
         Task<string> GenerateTokenVerifyEmailAsync(Guid userId);
 
         Task<VerifyEmailResponseDTO> VerifyEmailAsync(Guid userId , string Token);
+
+        Task<LoginResponseDTO> LoginAsync(LoginDTO loginDTO);
+
+        Task<LoginResponseDTO> RefreshTokenAsync(string Token);
     }
 }

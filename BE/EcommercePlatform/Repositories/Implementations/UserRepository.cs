@@ -1,4 +1,5 @@
 ﻿using EcommercePlatform.Data;
+using EcommercePlatform.DTOs.RequestDTO;
 using EcommercePlatform.Entities;
 using EcommercePlatform.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,11 @@ namespace EcommercePlatform.Repositories.Implementations
             _context = context;
         }
 
+        public async Task AddRefeshTokenAsync(RefreshToken refreshToken)
+        {
+            await _context.RefreshTokens.AddAsync(refreshToken);
+        }
+
         public async Task AddUserAsync(User user)
         {
             await _context.Users.AddAsync(user);
@@ -21,7 +27,19 @@ namespace EcommercePlatform.Repositories.Implementations
 
         public async Task<User> GetByEmailAsync(string email)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            var user = await _context.Users
+                .Include(u => u.UserRole)
+                .FirstOrDefaultAsync(u => u.Email == email);
+            return user;
+        }
+
+        public async Task<RefreshToken?> GetRefreshTokenAsync(string token)
+        {
+            return await _context.RefreshTokens
+    .Include(r => r.user)
+    .ThenInclude(u => u.UserRole)
+    .FirstOrDefaultAsync(r => r.Token == token);
+
         }
 
         public async Task<User> GetUserByIdAsync(Guid id)

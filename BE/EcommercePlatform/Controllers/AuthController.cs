@@ -38,5 +38,29 @@ namespace EcommercePlatform.Controllers
             return BadRequest(rs);
              
         }
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
+        {
+
+            var rs = await _authService.LoginAsync(loginDTO);
+            if (rs.Success == true)
+            {
+                return Ok(rs);
+            }
+            return BadRequest(rs);
+
+        }
+        [HttpPost("refreshtoken")]
+        public async Task<IActionResult> RefreshToken([FromBody] string token)
+        {
+
+            var rs = await _authService.RefreshTokenAsync(token);
+            if (rs.Success == true)
+            {
+                return Ok(rs);
+            }
+            return BadRequest(rs);
+
+        }
     }
 }

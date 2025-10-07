@@ -11,16 +11,18 @@ namespace EcommercePlatform.Services.Implementations
     {
         private readonly IUserRepository _userRepo;
         private readonly IRoleRepository _roleRepo;
+        private readonly IPasswordResetRepository _passwordResetRepo;
         private readonly IEmailVfRepository _emailVfRepo;
         private readonly EmailService _emailService;
         private readonly IJwtService _jwtService;
-        public AuthService(IUserRepository userRepository, IRoleRepository roleRepository, IEmailVfRepository emailVfRepo, EmailService emailService, IJwtService jwtService)
+        public AuthService(IUserRepository userRepository, IRoleRepository roleRepository, IEmailVfRepository emailVfRepo, EmailService emailService, IJwtService jwtService , IPasswordResetRepository passwordResetRepository)
         {
             _userRepo = userRepository;
             _roleRepo = roleRepository;
             _emailVfRepo = emailVfRepo;
             _emailService = emailService;
             _jwtService = jwtService;
+            _passwordResetRepo = passwordResetRepository;
         }
 
         public async Task<string> GenerateTokenVerifyEmailAsync(Guid userId)
@@ -88,13 +90,13 @@ namespace EcommercePlatform.Services.Implementations
         }
 
 
-        public async Task<VerifyEmailResponseDTO> VerifyEmailAsync(Guid userId, string Token)
+        public async Task<VerifyResponseDTO> VerifyEmailAsync(Guid userId, string Token)
         {
             var emailToken = await _emailVfRepo.GetByToken(Token);
             if (emailToken == null || emailToken.UserId != userId)
             {
 
-                return new VerifyEmailResponseDTO
+                return new VerifyResponseDTO
                 {
                     Success = false,
                     Message = "Token khong hop le"
@@ -102,7 +104,7 @@ namespace EcommercePlatform.Services.Implementations
             }
             if (emailToken.ExpiresAt < DateTime.Now)
             {
-                return new VerifyEmailResponseDTO
+                return new VerifyResponseDTO
                 {
                     Success = false,
                     Message = "Token het han"
@@ -111,7 +113,7 @@ namespace EcommercePlatform.Services.Implementations
             var user = await _userRepo.GetUserByIdAsync(userId);
             if (user == null)
             {
-                return new VerifyEmailResponseDTO
+                return new VerifyResponseDTO
                 {
                     Success = false,
                     Message = "Nguoi dung khong ton tai"
@@ -123,7 +125,7 @@ namespace EcommercePlatform.Services.Implementations
             emailToken.ExpiresAt = DateTime.Now;
             await _emailVfRepo.SaveChangesAsync();
 
-            return new VerifyEmailResponseDTO
+            return new VerifyResponseDTO
             {
                 Success = true,
                 Message = "Xac thuc email thanh cong"
@@ -204,6 +206,44 @@ namespace EcommercePlatform.Services.Implementations
                 AccessToken = newAccessToken,
                 RefreshToken = newRefreshToken.Token
             };
+        }
+
+        public async Task SendPasswordResetByEmailAsync(string email)
+        {
+            var user = await _userRepo.GetByEmailAsync(email);
+            if(user == null)
+            {
+                throw new Exception("Email không tồn tại");
+            }
+            string token = Guid.NewGuid().ToString();
+            var resetToken = new PasswordResetToken
+            {
+                UserId= user.Id,
+                Token= token,
+                ExpiresAt= DateTime.Now.AddMinutes(15)
+            };
+
+            await _passwordResetRepo.AddPassResetToken(resetToken);
+            await _passwordResetRepo.SaveChangesAsync();
+            string resetLink = $"https://localhost:7165/api/auth/reset-password?token={token}"; string body = $@" <h3>Reset your password</h3> <p>Click the link below to reset your password:</p> <a href='{resetLink}' style='padding:10px 20px; background-color:#f44336; color:white; text-decoration:none;'>Reset Password</a> <p>If the button doesn't work, copy this link:</p> <p>{resetLink}</p> ";
+            await _emailService.SendEmailAsync(user.Email, "Reset your password", body);
+        }
+
+        public async Task<bool> ResetPasswordAsync(string token, string newPassword, string confirmPassword)
+        {
+            var resetToken = await _passwordResetRepo.GetByToken(token);
+            if (resetToken == null || resetToken.ExpiresAt < DateTime.Now)
+                throw new Exception("Token không hợp lệ hoặc đã hết hạn");
+
+            if (newPassword != confirmPassword)
+                throw new Exception("Mật khẩu không khớp");
+            var user = resetToken.User;
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+            resetToken.ExpiresAt = DateTime.Now; 
+            await _userRepo.SaveChangesAsync(); 
+            await _passwordResetRepo.SaveChangesAsync(); 
+            return true;
+
         }
     }
 }

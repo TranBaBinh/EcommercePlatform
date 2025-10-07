@@ -9,9 +9,13 @@ namespace EcommercePlatform.Services.Interfaces
 
         Task<string> GenerateTokenVerifyEmailAsync(Guid userId);
 
-        Task<VerifyEmailResponseDTO> VerifyEmailAsync(Guid userId , string Token);
+        Task<VerifyResponseDTO> VerifyEmailAsync(Guid userId , string Token);
 
         Task<LoginResponseDTO> LoginAsync(LoginDTO loginDTO);
+
+        Task SendPasswordResetByEmailAsync(string email);
+
+        Task<bool> ResetPasswordAsync(string token , string newPassword , string confirmPassword);
 
         Task<LoginResponseDTO> RefreshTokenAsync(string Token);
     }

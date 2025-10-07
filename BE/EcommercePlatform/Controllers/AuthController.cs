@@ -62,5 +62,42 @@ namespace EcommercePlatform.Controllers
             return BadRequest(rs);
 
         }
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] string email)
+        {
+
+            try
+            {
+                await _authService.SendPasswordResetByEmailAsync(email);
+                return Ok(new { Message = "Email reset password đã được gửi" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+
+        }
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO resetPasswordDTO)
+        {
+
+            try
+            {
+                var rs = await _authService.ResetPasswordAsync(
+                    resetPasswordDTO.Token,
+                    resetPasswordDTO.Newpassword,
+                    resetPasswordDTO.ConfirmPassword
+                );
+
+                if (!rs)
+                    return BadRequest(new { Message = "Đặt lại mật khẩu thất bại" });
+
+                return Ok(new { Message = "Đặt lại mật khẩu thành công" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
     }
 }

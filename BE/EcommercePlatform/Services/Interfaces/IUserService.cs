@@ -1,7 +1,9 @@
-﻿namespace EcommercePlatform.Services.Interfaces
+﻿using EcommercePlatform.DTOs.ResponseDTO;
+
+namespace EcommercePlatform.Services.Interfaces
 {
     public interface IUserService
-    {
-        Task RegisterAsync(string email, string password, string fullname);
+    {      
+        Task<UserProfileDTO?> GetUserProfileAsync(Guid id);
     }
 }

@@ -1,4 +1,5 @@
-﻿using EcommercePlatform.Repositories.Interfaces;
+﻿using EcommercePlatform.DTOs.ResponseDTO;
+using EcommercePlatform.Repositories.Interfaces;
 using EcommercePlatform.Services.Interfaces;
 
 namespace EcommercePlatform.Services.Implementations
@@ -11,9 +12,20 @@ namespace EcommercePlatform.Services.Implementations
             _userRepository = userRepository;
         }
 
-        public Task RegisterAsync(string email, string password, string fullname)
+        public async Task<UserProfileDTO?> GetUserProfileAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetUserByIdAsync(id);
+            if (user == null) return null;
+            return new UserProfileDTO
+            {
+                FullName = user.FullName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Gender = user.Gender,
+                AvatarUrl = user.AvatarUrl,
+                RoleName = user.UserRole?.Name
+            };
         }
+
     }
 }

@@ -8,6 +8,7 @@ using EcommercePlatform.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,9 +16,35 @@ var builder = WebApplication.CreateBuilder(args);
 // Add controllers
 builder.Services.AddControllers();
 
-// Swagger
+// Swagger + JWT Authorize
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    // Cấu hình hiển thị nút Authorize
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "Nhập JWT token vào đây theo dạng: Bearer {token}",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
 
 // Đăng ký DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -25,10 +52,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Cấu hình JWT từ appsettings.json
 builder.Services.Configure<JwtSetting>(builder.Configuration.GetSection("JwtOptions"));
-
 var jwtSettings = builder.Configuration.GetSection("JwtOptions").Get<JwtSetting>();
 
-// Cấu hình Authentication với JWT
+// Authentication - JWT
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -42,17 +68,12 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateIssuer = true,
         ValidIssuer = jwtSettings.Issuer,
-
         ValidateAudience = true,
         ValidAudience = jwtSettings.Audience,
-
         ValidateLifetime = true,
-        ClockSkew = TimeSpan.FromMinutes(1), // cho phép trễ nhẹ
-
+        ClockSkew = TimeSpan.FromMinutes(1),
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(jwtSettings.Key)
-        )
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
     };
 });
 
@@ -64,6 +85,7 @@ builder.Services.AddScoped<IPasswordResetRepository, PasswordResetRepository>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<EmailService>();
 
 var app = builder.Build();
@@ -77,7 +99,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();  
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

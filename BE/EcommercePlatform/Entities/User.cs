@@ -23,7 +23,9 @@ namespace EcommercePlatform.Entities
         public bool IsActive { get; set; } = false;
         public bool IsBanned { get; set; } = false ;
         public Guid RoleId { get; set; }
-     
+        public string? Gender { get; set; }    
+        public string? AvatarUrl { get; set; } 
+
         public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
         public ICollection<Cart> Carts { get; set; } = new List<Cart>();
         public ICollection<Order> Orders { get; set; } = new List<Order>();

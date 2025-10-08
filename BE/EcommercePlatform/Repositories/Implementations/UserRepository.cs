@@ -42,9 +42,11 @@ namespace EcommercePlatform.Repositories.Implementations
 
         }
 
-        public async Task<User> GetUserByIdAsync(Guid id)
+        public async Task<User?> GetUserByIdAsync(Guid id)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+            return await _context.Users
+                .Include(u => u.UserRole)
+                .FirstOrDefaultAsync(u => u.Id == id);
         }
 
         public async Task SaveChangesAsync()

@@ -1,4 +1,5 @@
-﻿using EcommercePlatform.DTOs.ResponseDTO;
+﻿using EcommercePlatform.DTOs.RequestDTO;
+using EcommercePlatform.DTOs.ResponseDTO;
 using EcommercePlatform.Repositories.Interfaces;
 using EcommercePlatform.Services.Interfaces;
 
@@ -27,5 +28,38 @@ namespace EcommercePlatform.Services.Implementations
             };
         }
 
+        public async Task<UpdateUserProfileDTO?> UpdateUserProfileAsync(Guid id, UpdateUserProfileDTO userProfileDTO)
+        {
+            var user = await _userRepository.GetUserByIdAsync(id);
+            if (user == null) return null;
+            if (!string.IsNullOrWhiteSpace(userProfileDTO.FullName))
+            {
+                user.FullName = userProfileDTO.FullName;
+            }
+            if (!string.IsNullOrWhiteSpace(userProfileDTO.Phone))
+            {
+                user.PhoneNumber = userProfileDTO.Phone;
+            }
+            if (!string.IsNullOrWhiteSpace(userProfileDTO.Gender))
+            {
+                user.Gender = userProfileDTO.Gender;
+            }
+            if (!string.IsNullOrWhiteSpace(userProfileDTO.AvatarUrl))
+            {
+                user.AvatarUrl = userProfileDTO.AvatarUrl;
+            }
+
+            await _userRepository.UpdateUserAsync(user);
+            await _userRepository.SaveChangesAsync();
+
+            return new UpdateUserProfileDTO
+            {
+                FullName = user.FullName,
+                Phone = user.PhoneNumber,
+                Gender = user.Gender,
+                AvatarUrl = user.AvatarUrl
+            };
+
+        }
     }
 }

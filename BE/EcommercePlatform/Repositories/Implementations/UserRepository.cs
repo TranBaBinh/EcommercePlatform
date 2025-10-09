@@ -53,5 +53,11 @@ namespace EcommercePlatform.Repositories.Implementations
         {
             await _context.SaveChangesAsync();
         }
+
+        public async Task UpdateUserAsync(User user)
+        {
+            _context.Users.Update(user);
+            await Task.CompletedTask;
+        }
     }
 }

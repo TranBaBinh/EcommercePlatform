@@ -1,4 +1,5 @@
-﻿using EcommercePlatform.Entities;
+﻿using EcommercePlatform.DTOs.RequestDTO;
+using EcommercePlatform.Entities;
 
 namespace EcommercePlatform.Repositories.Interfaces
 {
@@ -6,6 +7,9 @@ namespace EcommercePlatform.Repositories.Interfaces
     {
         Task<User> GetByEmailAsync(string email);
         Task<User> GetUserByIdAsync(Guid id);
+
+        Task UpdateUserAsync(User user);
+
         Task AddUserAsync(User user);
 
         Task AddRefeshTokenAsync(RefreshToken refreshToken);

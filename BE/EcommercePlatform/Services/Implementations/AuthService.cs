@@ -187,7 +187,7 @@ namespace EcommercePlatform.Services.Implementations
                     Message = "Refresh token không hợp lệ"
                 };
             }
-            var user = exitingToken.user;
+            var user = exitingToken.User;
             var newAccessToken = _jwtService.GenerateAccessToken(user);
             var newToken = _jwtService.GenerateRefreshToken();
             var newRefreshToken = new RefreshToken

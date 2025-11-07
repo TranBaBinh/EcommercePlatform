@@ -18,6 +18,6 @@ namespace EcommercePlatform.Entities
 
         public DateTime CreateAt { get; set; } = DateTime.UtcNow;
 
-        public User user { get; set; }
+        public User User { get; set; }
     }
 }

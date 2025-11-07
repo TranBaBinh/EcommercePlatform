@@ -9,7 +9,7 @@
         public string District { get; set; }
         public string Ward { get; set; }
         public bool IsDefault { get; set; } = false;
-
+        public bool IsDeleted { get; set; } = false;
         public User User { get; set; }
         public ICollection<Order> Orders { get; set; } = new List<Order>();
     }

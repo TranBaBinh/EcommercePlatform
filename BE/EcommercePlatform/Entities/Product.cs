@@ -6,9 +6,9 @@ namespace EcommercePlatform.Entities
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         [Required , StringLength(200)]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [Range(0 , double.MaxValue)]
         public decimal OriginalPrice { get; set; }
@@ -16,10 +16,11 @@ namespace EcommercePlatform.Entities
         public decimal CurrentPrice { get; set; }
         public int StockQuantity { get; set; }
         public Guid CategoryId { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
         public bool IsActive { get; set; } = true;
-        public Category Category { get; set; }
-
+        public Category Category { get; set; } = null!;
+        public Guid SellerId { get; set; }        
+        public User Seller { get; set; } = null!;
         public ICollection<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
         public ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
         public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();

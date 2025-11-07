@@ -32,6 +32,8 @@ namespace EcommercePlatform.Entities
         public ICollection<Address> Addresses { get; set; } = new List<Address>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
         public ICollection<AuditLog> AuditLogs { get; set; } = new List<AuditLog>();
+        public ICollection<Product> Products { get; set; } = new List<Product>();
+
         public Role UserRole { get; set; }
     }
 }

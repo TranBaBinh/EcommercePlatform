@@ -36,7 +36,7 @@ namespace EcommercePlatform.Repositories.Implementations
         public async Task<RefreshToken?> GetRefreshTokenAsync(string token)
         {
             return await _context.RefreshTokens
-    .Include(r => r.user)
+    .Include(r => r.User)
     .ThenInclude(u => u.UserRole)
     .FirstOrDefaultAsync(r => r.Token == token);
 

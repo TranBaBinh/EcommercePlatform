@@ -51,7 +51,7 @@ namespace EcommercePlatform.Services.Implementations
             {
                 throw new Exception("Passwords do not match!");
             }
-            var defaultRole = await _roleRepo.GetByName("User");
+            var defaultRole = await _roleRepo.GetByName("Customer");
             if (defaultRole == null)
             {
                 throw new Exception("Default role 'User' not found!");

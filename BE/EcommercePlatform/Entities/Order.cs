@@ -14,12 +14,9 @@
         public User User { get; set; }
         public Address ShippingAddress { get; set; }
 
+        public Voucher Voucher { get; set; }
+
         public ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
         public ICollection<Payment> Payments { get; set; } = new List<Payment>();
-
-
-
-
-
     }
 }

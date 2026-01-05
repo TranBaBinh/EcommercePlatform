@@ -14,8 +14,8 @@ namespace EcommercePlatform.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly CloudinaryService _cloudinaryService;
-        public UserController(IUserService userService, CloudinaryService cloudinaryService)
+        private readonly ICloudinaryService _cloudinaryService;
+        public UserController(IUserService userService, ICloudinaryService cloudinaryService)
         {
             _userService = userService;
             _cloudinaryService = cloudinaryService;

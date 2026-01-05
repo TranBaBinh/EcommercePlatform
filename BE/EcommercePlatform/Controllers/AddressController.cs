@@ -51,7 +51,7 @@ namespace EcommercePlatform.Controllers
             var rs = await _addressService.UpdateAddressAsync(userId, addressDTO);
             return Ok(rs);
         }
-        [HttpDelete]
+        [HttpDelete("{addressId}")]
         public async Task<IActionResult> DeleteAddress(Guid addressId)
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

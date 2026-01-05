@@ -1,11 +1,12 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using EcommercePlatform.Configuration;
+using EcommercePlatform.Services.Interfaces;
 using Microsoft.Extensions.Options;
 
 namespace EcommercePlatform.Services.CommonService
 {
-    public class CloudinaryService
+    public class CloudinaryService : ICloudinaryService
     {
         private readonly Cloudinary _cloudinary;
 

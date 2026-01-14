@@ -33,5 +33,31 @@ namespace EcommercePlatform.Services.Implementations
                 ParentCategoryId = obj.ParentCategoryId
             };
         }
+
+        public async Task<List<CategoryDTO>> GetListCategory()
+        {
+            var allCate = await _categoryrepo.GetAllCategoryAsync();
+
+            var rootCate = allCate.Where(c => c.ParentCategoryId == null).ToList();
+
+            var rs = rootCate.Select(c => MapToDtoRecursively(c, rootCate)).ToList();
+
+            return rs;
+        }
+
+        private CategoryDTO MapToDtoRecursively(Category category, IEnumerable<Category> allCategories)
+        {
+            return new CategoryDTO
+            {
+                Id = category.Id,
+                Name = category.Name,
+                Description = category.Description,
+                ParentCategoryId = category.ParentCategoryId,
+                SubCategories = allCategories
+                    .Where(c => c.ParentCategoryId == category.Id) 
+                    .Select(child => MapToDtoRecursively(child, allCategories)) 
+                    .ToList()
+            };
+        }
     }
 }

@@ -40,7 +40,7 @@ namespace EcommercePlatform.Services.Implementations
 
             var rootCate = allCate.Where(c => c.ParentCategoryId == null).ToList();
 
-            var rs = rootCate.Select(c => MapToDtoRecursively(c, rootCate)).ToList();
+            var rs = rootCate.Select(c => MapToDtoRecursively(c, allCate)).ToList();
 
             return rs;
         }

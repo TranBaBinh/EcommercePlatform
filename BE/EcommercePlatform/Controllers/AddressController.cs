@@ -16,7 +16,7 @@ namespace EcommercePlatform.Controllers
         {
             _addressService = addressService;
         }
-        [HttpGet]
+        [HttpGet("get-addresses")]
         public async Task<IActionResult> GetAddresses() {
          
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -29,7 +29,7 @@ namespace EcommercePlatform.Controllers
             return Ok(addresses);
 
         }
-        [HttpPost]
+        [HttpPost("create-address")]
         public async Task<IActionResult> AddAddress([FromBody] AddressDTO addressDTO)
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -41,7 +41,7 @@ namespace EcommercePlatform.Controllers
 
             return Ok(newAddress);
         }
-        [HttpPut]
+        [HttpPut("update-address")]
         public async Task<IActionResult> EditAddress([FromBody] AddressDTO addressDTO)
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

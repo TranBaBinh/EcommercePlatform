@@ -11,9 +11,7 @@ namespace EcommercePlatform.Entities
         public string? Description { get; set; }
 
         [Range(0 , double.MaxValue)]
-        public decimal OriginalPrice { get; set; }
-        [Range(0 , double.MaxValue)]
-        public decimal CurrentPrice { get; set; }
+        public decimal Price { get; set; }
         public int StockQuantity { get; set; }
         public Guid CategoryId { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
@@ -25,6 +23,7 @@ namespace EcommercePlatform.Entities
         public ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
         public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
+        public ICollection<ProductPromotion> ProductPromotions { get; set; } = new List<ProductPromotion>();
 
     }
 }

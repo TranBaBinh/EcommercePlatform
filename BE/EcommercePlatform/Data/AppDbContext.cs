@@ -46,11 +46,7 @@ namespace EcommercePlatform.Data
                 .HasColumnType("decimal(18,2)");
 
             modelBuilder.Entity<Product>()
-                .Property(p => p.CurrentPrice)
-                .HasColumnType("decimal(18,2)");
-
-            modelBuilder.Entity<Product>()
-                .Property(p => p.OriginalPrice)
+                .Property(p => p.Price)
                 .HasColumnType("decimal(18,2)");
 
             modelBuilder.Entity<Voucher>()
@@ -100,7 +96,21 @@ namespace EcommercePlatform.Data
                 .WithMany(u => u.Products)
                 .HasForeignKey(p => p.SellerId)
                 .OnDelete(DeleteBehavior.NoAction);
+            //promotions
+            modelBuilder.Entity<ProductPromotion>()
+                .HasKey(pp => new { pp.ProductId, pp.PromotionId});
+            modelBuilder.Entity<ProductPromotion>()
+                .HasOne(pp => pp.Product)
+                .WithMany(p => p.ProductPromotions)
+                .HasForeignKey(pp => pp.ProductId);
 
+            modelBuilder.Entity<ProductPromotion>()
+                .HasOne(pp => pp.Promotion)
+                .WithMany(p => p.ProductPromotions)
+                .HasForeignKey(pp => pp.PromotionId);
+            modelBuilder.Entity<Promotion>()
+               .Property(p => p.DiscountPercent)
+               .HasColumnType("decimal(18,2)");
 
         }
 

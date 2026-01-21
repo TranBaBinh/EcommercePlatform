@@ -7,6 +7,6 @@
         public string? Description { get; set; }
         public Guid? ParentCategoryId { get; set; }
 
-        public List<CategoryDTO> SubCategories = new List<CategoryDTO>();
+        public List<CategoryDTO> SubCategories { get; set; } = new List<CategoryDTO>();
     }
 }

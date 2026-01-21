@@ -15,13 +15,26 @@ namespace EcommercePlatform.Controllers
         {
             _categoryService = categoryService;
         }
-        [HttpPost]
+        [HttpPost("create-category")]
         public async Task<IActionResult> CreateCategory(CreateCategoryDTO createCategoryDTO) {
             try
             {
                 var rs = await _categoryService.AddCategoryAsync(createCategoryDTO);
                 return Ok(rs);
             } catch (Exception ex) { 
+                return BadRequest(new { ex.Message });
+            }
+        }
+        [HttpGet("get-list-category")]
+        public async Task<IActionResult> GetListCategory()
+        {
+            try
+            {
+                var rs = await _categoryService.GetListCategory();
+                return Ok(rs);
+            }
+            catch(Exception ex)
+            {
                 return BadRequest(new { ex.Message });
             }
         }

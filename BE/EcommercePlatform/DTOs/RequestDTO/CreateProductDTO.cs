@@ -11,7 +11,7 @@ namespace EcommercePlatform.DTOs.RequestDTO
         public decimal StockQuanlity { get; set; }
         public Guid CategoryID { get; set; }
 
-        public List<string> ImagesUrl { get;set } = new List<string>(); 
+        public List<string> ImagesUrl { get; set; } = new List<string>(); 
 
     }
 }

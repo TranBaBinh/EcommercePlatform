@@ -8,10 +8,10 @@ namespace EcommercePlatform.DTOs.RequestDTO
 
         public string? Description { get; set; }
         public decimal Price { get; set; }
-        public decimal StockQuanlity { get; set; }
+        public int StockQuanlity { get; set; }
         public Guid CategoryID { get; set; }
 
-        public List<string> ImagesUrl { get; set; } = new List<string>(); 
+        public List<IFormFile>? ImagesUrl { get; set; }
 
     }
 }

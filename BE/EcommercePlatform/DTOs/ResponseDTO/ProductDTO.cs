@@ -10,6 +10,8 @@
         public decimal CurrentPrice { get; set; } 
         public decimal DiscountPercent { get; set; }
         public string? PromotionName { get; set; } 
+
+        public Guid CategoryId { get; set; }
         public string CategoryName { get; set; } = string.Empty;
         public string SellerName { get; set; } = string.Empty;
         public string? ThumbnailUrl { get; set; }

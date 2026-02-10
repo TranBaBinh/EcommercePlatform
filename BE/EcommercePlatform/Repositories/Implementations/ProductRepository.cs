@@ -49,9 +49,32 @@ namespace EcommercePlatform.Repositories.Implementations
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
+        public async Task<int> GetTotalCountAsync(string? keyword, Guid? categoryId)
+        {
+            var query = _context.Products.AsQueryable();
+            
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                query = query.Where(p => p.Name.Contains(keyword) || (p.Description != null && p.Description.Contains(keyword)));
+            }
+            
+            if (categoryId.HasValue)
+            {
+                query = query.Where(p => p.CategoryId == categoryId);
+            }
+            
+            return await query.CountAsync();
+        }
+
         public async Task UpdateProductAsync(Product product)
         {
             _context.Products.Update(product);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteProductAsync(Product product)
+        {
+            _context.Products.Remove(product);
             await _context.SaveChangesAsync();
         }
     }

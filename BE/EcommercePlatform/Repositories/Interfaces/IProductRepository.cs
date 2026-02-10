@@ -8,8 +8,12 @@ namespace EcommercePlatform.Repositories.Interfaces
 
         Task<List<Product>> GetAllAsync(string? keyword, Guid? categoryId, int pageIndex, int pageSize);
 
+        Task<int> GetTotalCountAsync(string? keyword, Guid? categoryId);
+
         Task<Product?> GetByIdAsync(Guid id);
 
         Task UpdateProductAsync(Product product);
+
+        Task DeleteProductAsync(Product product);
     }
 }
